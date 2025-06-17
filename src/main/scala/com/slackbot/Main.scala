@@ -48,7 +48,7 @@ object Main extends IOApp {
             IO.println(s"Swagger UI available at: http://${config.server.host}:${config.server.port}/docs") *>
             IO.println("Press ENTER to stop the server...") *>
             IO.readLine *>
-            IO.println("Stopping server...")
+            IO.println("Stopping the server...")
         }
     } yield ExitCode.Success
   }
