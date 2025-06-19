@@ -15,17 +15,21 @@ class SlackClient(botToken: String) {
 
   def sendMessage(message: SlackMessage): IO[Unit] = {
     backendResource.use { implicit backend =>
+      val jsonPayload = message.asJson
+
+      println(s"Sending JSON to Slack: ${jsonPayload.spaces2}")
+
       val request = basicRequest
         .post(uri"https://slack.com/api/chat.postMessage")
         .header("Authorization", s"Bearer $botToken")
         .header("Content-Type", "application/json")
-        .body(message.asJson)
+        .body(jsonPayload)
         .response(asJson[Json])
 
       request.send(backend).flatMap { response =>
         response.body match {
           case Right(json) =>
-            //as i am working with json later with different
+            println(s"Slack API Response: ${json.spaces2}")
             val okField = json.hcursor.get[Boolean]("ok")
             okField match {
               case Right(true) => IO.println("Message sent successfully")
@@ -39,27 +43,27 @@ class SlackClient(botToken: String) {
       }
     }
   }
-
   def createInteractiveMessage(channel: String, text: String, messageId: String = "approval_request"): SlackMessage = {
     val blocks = List(
       SlackBlock(
         `type` = "section",
-        text = Some(SlackText(`type` = "mrkdwn", text = text))
+        text = Some(SlackText(`type` = "mrkdwn", text = text)) // No emoji field for mrkdwn
       ),
       SlackBlock(
         `type` = "actions",
+        block_id = Some("approval_actions"),
         elements = Some(List(
           SlackElement(
             `type` = "button",
-            text = Some(SlackText(`type` = "plain_text", text = "Accept", emoji = Some(true))),
             action_id = Some("accept_action"),
+            text = Some(SlackText(`type` = "plain_text", text = "Accept", emoji = Some(true))), // emoji only for plain_text
             value = Some(messageId),
             style = Some("primary")
           ),
           SlackElement(
             `type` = "button",
-            text = Some(SlackText(`type` = "plain_text", text = "Decline", emoji = Some(true))),
             action_id = Some("decline_action"),
+            text = Some(SlackText(`type` = "plain_text", text = "Decline", emoji = Some(true))),
             value = Some(messageId),
             style = Some("danger")
           )

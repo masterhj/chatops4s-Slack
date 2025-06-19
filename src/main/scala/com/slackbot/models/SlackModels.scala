@@ -51,9 +51,9 @@ case class SlackInteractivePayload(
 
 case class SlackBlock(
                        `type`: String,
+                       block_id: Option[String] = None,
                        text: Option[SlackText] = None,
-                       elements: Option[List[SlackElement]] = None,
-                       accessory: Option[SlackElement] = None
+                       elements: Option[List[SlackElement]] = None
                      )
 
 case class SlackElement(
@@ -78,6 +78,12 @@ case class SlackResponse(
 
 
 object SlackModels {
+  import io.circe.syntax._
+  import io.circe.Printer
+
+  // Configure Circe to drop null values
+  implicit val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
+
   implicit val slackTextDecoder: Decoder[SlackText] = deriveDecoder
   implicit val slackTextEncoder: Encoder[SlackText] = deriveEncoder
 

@@ -17,9 +17,10 @@ class SlackRoutes(slackClient: SlackClient) {
 
   private val interpreter = Http4sServerInterpreter[IO]()
 
-  
   private def sendMessage(request: SendMessageRequest): IO[Either[String, SendMessageResponse]] = {
     val messageId = request.messageId.getOrElse(UUID.randomUUID().toString)
+
+    // Now testing with interactive buttons
     val interactiveMessage = slackClient.createInteractiveMessage(
       channel = request.channel,
       text = request.message,
@@ -30,7 +31,7 @@ class SlackRoutes(slackClient: SlackClient) {
       .map(_ => Right(SendMessageResponse(success = true, messageId = messageId)))
       .handleError(error => Left(s"Failed to send message: ${error.getMessage}"))
   }
-  
+
   private def handleInteractive(payload: String): IO[Either[String, InteractiveResponse]] = {
     IO {
       for {
@@ -44,8 +45,8 @@ class SlackRoutes(slackClient: SlackClient) {
         val messageValue = action.map(_.value).getOrElse("unknown")
 
         val responseMessage = actionType match {
-          case "accept_action" => s"✅ Request $messageValue was accepted by $user"
-          case "decline_action" => s"❌ Request $messageValue was declined by $user"
+          case "accept_action" => s" Request $messageValue was accepted by $user"
+          case "decline_action" => s" Request $messageValue was declined by $user"
           case _ => s"Unknown action $actionType by $user"
         }
 
@@ -60,10 +61,11 @@ class SlackRoutes(slackClient: SlackClient) {
       case Left(error) => Left(s"Failed to parse interactive payload: ${error.getMessage}")
     }
   }
+
   private def healthCheck(): IO[Either[String, String]] = {
     IO.pure(Right("OK - Slack Bot is running"))
   }
-  
+
   val routes: HttpRoutes[IO] = List(
     interpreter.toRoutes(sendMessageEndpoint.serverLogic(sendMessage)),
     interpreter.toRoutes(interactiveCallbackEndpoint.serverLogic(handleInteractive)),
