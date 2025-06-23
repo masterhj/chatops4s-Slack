@@ -36,7 +36,7 @@ object Main extends IOApp {
       allRoutes = slackRoutes.routes <+> swaggerRoutes
 
       finalRoutes = Logger.httpRoutes(true, true)(CORS.policy.withAllowOriginAll(allRoutes))
-
+//My scala server for all function.
       _ <- EmberServerBuilder
         .default[IO]
         .withHost(Host.fromString(config.server.host).getOrElse(ipv4"0.0.0.0"))

@@ -32,7 +32,7 @@ object SlackEndPoints {
       .errorOut(stringBody)
       .name("Send Interactive Message")
       .description("Send a message with Accept/Decline buttons to Slack")
-//Endpoint for interaction after clicking on accept/decline buttonn
+//Endpoint for interaction after clicking on accept/decline button
   val interactiveCallbackEndpoint: PublicEndpoint[String, String, InteractiveResponse, Any] =
     endpoint.post
       .in("slack" / "interactive")

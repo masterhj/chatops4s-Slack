@@ -34,7 +34,7 @@ case class SlackText(
                       text: String,
                       emoji: Option[Boolean] = None
                     )
-
+//Payload requirement as per slack json package
 case class SlackInteractivePayload(
                                     `type`: String,
                                     user: SlackUser,
