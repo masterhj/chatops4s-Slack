@@ -47,7 +47,7 @@ class SlackClient(botToken: String) {
     val blocks = List(
       SlackBlock(
         `type` = "section",
-        text = Some(SlackText(`type` = "mrkdwn", text = text)) // No emoji field for mrkdwn
+        text = Some(SlackText(`type` = "mrkdwn", text = text)) 
       ),
       SlackBlock(
         `type` = "actions",
