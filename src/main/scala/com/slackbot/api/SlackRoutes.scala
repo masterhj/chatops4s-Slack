@@ -20,7 +20,7 @@ class SlackRoutes(slackClient: SlackClient) {
   private def sendMessage(request: SendMessageRequest): IO[Either[String, SendMessageResponse]] = {
     val messageId = request.messageId.getOrElse(UUID.randomUUID().toString)
 
-    // Now testing with interactive buttons
+    // Now testing with interactive buttons in Slack
     val interactiveMessage = slackClient.createInteractiveMessage(
       channel = request.channel,
       text = request.message,

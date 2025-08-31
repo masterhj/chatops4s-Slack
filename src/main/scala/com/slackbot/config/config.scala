@@ -1,5 +1,5 @@
 package com.slackbot.config
-
+//config file !!
 import pureconfig._
 case class SlackConfig(
                         botToken: String,

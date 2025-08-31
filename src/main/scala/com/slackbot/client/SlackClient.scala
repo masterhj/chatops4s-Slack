@@ -18,7 +18,7 @@ class SlackClient(botToken: String) {
       val jsonPayload = message.asJson
 
       println(s"Sending JSON to Slack: ${jsonPayload.spaces2}")
-
+     // API call to Slack
       val request = basicRequest
         .post(uri"https://slack.com/api/chat.postMessage")
         .header("Authorization", s"Bearer $botToken")
@@ -43,11 +43,12 @@ class SlackClient(botToken: String) {
       }
     }
   }
+  //Interactivty after clicking on buttons
   def createInteractiveMessage(channel: String, text: String, messageId: String = "approval_request"): SlackMessage = {
     val blocks = List(
       SlackBlock(
         `type` = "section",
-        text = Some(SlackText(`type` = "mrkdwn", text = text)) // No emoji field for mrkdwn
+        text = Some(SlackText(`type` = "mrkdwn", text = text)) 
       ),
       SlackBlock(
         `type` = "actions",
